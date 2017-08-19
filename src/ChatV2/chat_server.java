@@ -5,6 +5,7 @@
  */
 package ChatV2;
 
+import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
@@ -48,6 +49,12 @@ public class chat_server extends javax.swing.JFrame {
         msg_area.setColumns(20);
         msg_area.setRows(5);
         jScrollPane1.setViewportView(msg_area);
+
+        msg_text.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                msg_textKeyPressed(evt);
+            }
+        });
 
         msg_send.setText("ENVIAR");
         msg_send.addActionListener(new java.awt.event.ActionListener() {
@@ -109,15 +116,28 @@ public class chat_server extends javax.swing.JFrame {
 
     private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
         // TODO add your handling code here:
-        try {
+        
+        
+    }//GEN-LAST:event_msg_sendActionPerformed
+
+    private void msg_textKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_msg_textKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
+          try {
             String msgout = "";
             msgout = msg_text.getText().trim();
             dout.writeUTF(msgout);
+            msg_text.setText("");
+            msg_text.requestFocus();
         } catch (Exception e) {
         
+        }  
+        }
+        if (evt.getKeyCode()==KeyEvent.VK_ESCAPE) {
+            System.exit(0);
         }
         
-    }//GEN-LAST:event_msg_sendActionPerformed
+    }//GEN-LAST:event_msg_textKeyPressed
 
     /**
      * @param args the command line arguments
