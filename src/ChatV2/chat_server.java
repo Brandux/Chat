@@ -135,11 +135,14 @@ public class chat_server extends javax.swing.JFrame {
             String msgout = "";
             msgout = msg_text.getText().trim();
             dout.writeUTF(msgout);
-            msg_text.setText("");
             msg_text.requestFocus();
         } catch (Exception e) {
         
         }  
+                     msg_area.setText(" \n SERVIDOR:  \t"+ msg_text.getText());
+                                 msg_text.setText("");
+
+
         }
         if (evt.getKeyCode()==KeyEvent.VK_ESCAPE) {
             System.exit(0);
@@ -192,7 +195,7 @@ public class chat_server extends javax.swing.JFrame {
             
             while(!msgin.equals("exit")){
                 msgin = din.readUTF();
-                msg_area.setText(msg_area.getText().trim() + "\n "+ msgin);
+                msg_area.setText(msg_area.getText().trim() + "\n CLIENTE: "+ msgin);
                 
             }
              
