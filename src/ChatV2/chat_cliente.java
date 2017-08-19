@@ -150,7 +150,8 @@ public class chat_cliente extends javax.swing.JFrame {
         });
         
         try {
-            s=  new Socket("127.0.0.1" , 1201);
+            //s=  new Socket("127.0.0.1" , 1201);// forma local
+            s=  new Socket("192.168.21.18" , 1201);
             din = new DataInputStream(s.getInputStream());
             dout = new DataOutputStream(s.getOutputStream());
             String msgin  ="";
