@@ -9,13 +9,29 @@ package Chat;
  *
  * @author Brandukosky
  */
-public class Servidor extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Servidor
-     */
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class Servidor extends javax.swing.JFrame implements Runnable{
+
+    ServerSocket ss;
+    Socket ens;
+    Socket s ;
+    int puerto =1024;
+    int puerto2 = 1025;
+    
     public Servidor() {
         initComponents();
+        Thread hilo = new Thread(this);
+        hilo.start();
     }
 
     /**
@@ -147,4 +163,39 @@ public class Servidor extends javax.swing.JFrame {
     private javax.swing.JTextArea txtAreaSe;
     private javax.swing.JTextField txtipSer;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+        try {
+             ss= new ServerSocket(puerto);
+             String ipd , ipo, user, msj;
+             Paquete pack;
+             
+             while(true){
+                 InetAddress direccion = InetAddress.getLocalHost();
+                 String ipSer = direccion.getHostAddress();
+                 s = ss.accept();
+                 ObjectInputStream in = new ObjectInputStream(s.getInputStream());
+                 pack = (Paquete) in.readObject();
+                 ipd = pack.getIpDestino();
+                 ipo = pack.getIpOrigen();
+                 user = pack.getUsuario();
+                 msj = pack.getMensaje();
+                 
+                 txtipSer.setText(ipSer);
+                 txtAreaSe.append(ipo + " ---- >" + ipd + "\n");
+                 txtAreaSe.append(user + " : " + msj + "\n");
+                 ens = new Socket(ipd , puerto2);
+                 ObjectOutputStream out = new ObjectOutputStream(ens.getOutputStream());
+                 out.writeObject(pack);
+                 s.close();
+             }
+             
+        } catch (IOException x) {
+                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, x);
+            }catch (ClassNotFoundException e) {
+                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, e);
+        }
+    
+    }
 }
