@@ -4,18 +4,29 @@
  * and open the template in the editor.
  */
 package Chat;
-
+import com.sun.corba.se.spi.activation.Server;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Brandukosky
  */
-public class Cliente extends javax.swing.JFrame {
-
+public class Cliente extends javax.swing.JFrame implements Runnable{
+Socket cli;
+ServerSocket ss;
+Socket soc;
+int puertox=1024;
+int puertoy=1025;
     /**
      * Creates new form Cliente
      */
     public Cliente() {
         initComponents();
+        Thread hilo= new Thread(this);
+        hilo.start();
     }
 
     /**
@@ -42,6 +53,11 @@ public class Cliente extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         btnEnviar.setText("Enviar");
+        btnEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnviarActionPerformed(evt);
+            }
+        });
 
         txtArea.setColumns(20);
         txtArea.setRows(5);
@@ -128,6 +144,25 @@ public class Cliente extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
+        try {
+            ///el servidor2 ==txtip_servidor---
+            InetAddress direccion=InetAddress.getLocalHost();
+            String ip= direccion.getHostAddress();
+            cli= new Socket(txtIp_servidor.getText(),puertox);
+            Paquete pack= new Paquete();
+            pack.setUsuario(txtUsuario.getText());
+            pack.setMensaje(txtMensaje.getText());
+            pack.setIpDestino(txtIp_destino.getText());
+            pack.setIpOrigen(ip);
+           ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+           out.writeObject(pack);
+           cli.close();
+        } catch (Exception e) {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE,null,e);
+        }
+    }//GEN-LAST:event_btnEnviarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -176,4 +211,26 @@ public class Cliente extends javax.swing.JFrame {
     private javax.swing.JTextField txtMensaje;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+        try {
+            ss=new ServerSocket(puertoy);
+            String ipd,ipo,user,mensaje;
+            Paquete pack;
+            while (true) {                
+                soc= ss.accept();
+                ObjectInputStream in= new ObjectInputStream(soc.getInputStream());
+                pack=(Paquete) in.readObject();
+                ipd=pack.getIpDestino();
+                ipo=pack.getIpOrigen();
+                user=pack.getUsuario();
+                mensaje=pack.getMensaje();
+                txtArea.append(ipo+" : "+ipd+ "\n");
+                txtArea.append(user+" : "+mensaje+ "\n");
+
+            }
+        } catch (Exception e) {
+        }
+    }
 }
