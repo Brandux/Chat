@@ -5,6 +5,8 @@
  */
 package ChatV2;
 
+import static ChatV2.chat_server.dout;
+import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -53,6 +55,11 @@ public class chat_cliente extends javax.swing.JFrame {
         msg_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 msg_textActionPerformed(evt);
+            }
+        });
+        msg_text.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                msg_textKeyPressed(evt);
             }
         });
 
@@ -112,6 +119,7 @@ public class chat_cliente extends javax.swing.JFrame {
 
     private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
 
+        
         try {
             String msgout ="";
             msg_text.requestFocus();
@@ -128,6 +136,25 @@ public class chat_cliente extends javax.swing.JFrame {
     private void msg_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_textActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_msg_textActionPerformed
+
+    private void msg_textKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_msg_textKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+             try {
+            String msgout ="";
+            msg_text.requestFocus();
+            msgout = msg_text.getText().trim();
+            dout.writeUTF(msgout);
+        } catch (Exception e) {
+        
+        }
+              msg_area.setText(" \n CLIENTE:  \t"+ msg_text.getText());
+           msg_text.setText("");
+        }
+        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_msg_textKeyPressed
 
     /**
      * @param args the command line arguments

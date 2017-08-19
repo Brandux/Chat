@@ -116,7 +116,15 @@ public class chat_server extends javax.swing.JFrame {
 
     private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
         // TODO add your handling code here:
+        try {
+            String msgout = "";
+            msgout = msg_text.getText().trim();
+            dout.writeUTF(msgout);
+            msg_text.setText("");
+            msg_text.requestFocus();
+        } catch (Exception e) {
         
+        }  
         
     }//GEN-LAST:event_msg_sendActionPerformed
 
