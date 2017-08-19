@@ -50,6 +50,12 @@ public class chat_cliente extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
         jLabel1.setText("CLIENTE");
 
+        msg_text.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msg_textActionPerformed(evt);
+            }
+        });
+
         msg_send.setText("Enviar");
         msg_send.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -108,12 +114,20 @@ public class chat_cliente extends javax.swing.JFrame {
 
         try {
             String msgout ="";
+            msg_text.requestFocus();
             msgout = msg_text.getText().trim();
             dout.writeUTF(msgout);
         } catch (Exception e) {
         
         }
+           msg_area.setText(" \n CLIENTE:  \t"+ msg_text.getText());
+           msg_text.setText("");
+
     }//GEN-LAST:event_msg_sendActionPerformed
+
+    private void msg_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_textActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_msg_textActionPerformed
 
     /**
      * @param args the command line arguments
@@ -150,7 +164,7 @@ public class chat_cliente extends javax.swing.JFrame {
         });
         
         try {
-            //s=  new Socket("127.0.0.1" , 1201);// forma local
+           // s=  new Socket("127.0.0.1" , 1201);// forma local
             s=  new Socket("192.168.21.18" , 1201);
             din = new DataInputStream(s.getInputStream());
             dout = new DataOutputStream(s.getOutputStream());
@@ -160,7 +174,6 @@ public class chat_cliente extends javax.swing.JFrame {
                 msgin  = din.readUTF();
                 msg_area.setText(msg_area.getText().trim() + " \n SERVER:  \t"+ msgin);
             }
-            
         } catch (Exception e) {
         }
         
@@ -172,6 +185,6 @@ public class chat_cliente extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private static javax.swing.JTextArea msg_area;
     private javax.swing.JButton msg_send;
-    private javax.swing.JTextField msg_text;
+    private static javax.swing.JTextField msg_text;
     // End of variables declaration//GEN-END:variables
 }
