@@ -5,6 +5,11 @@
  */
 package ChatV2;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 /**
  *
  * @author Brandukosky
@@ -14,6 +19,10 @@ public class chat_server extends javax.swing.JFrame {
     /**
      * Creates new form chat_server
      */
+    static  ServerSocket ss ;
+    static Socket s;
+    static  DataInputStream din ;
+    static  DataOutputStream dout;
     public chat_server() {
         initComponents();
     }
@@ -41,6 +50,11 @@ public class chat_server extends javax.swing.JFrame {
         jScrollPane1.setViewportView(msg_area);
 
         msg_send.setText("ENVIAR");
+        msg_send.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msg_sendActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
         jLabel1.setText("SERVIDOR");
@@ -93,6 +107,18 @@ public class chat_server extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
+        // TODO add your handling code here:
+        try {
+            String msgout = "";
+            msgout = msg_text.getText().trim();
+            dout.writeUTF(msgout);
+        } catch (Exception e) {
+        
+        }
+        
+    }//GEN-LAST:event_msg_sendActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -126,13 +152,32 @@ public class chat_server extends javax.swing.JFrame {
                 new chat_server().setVisible(true);
             }
         });
+        
+        String msgin ="";
+        
+        try {
+            ss = new ServerSocket(1201);
+            s = ss.accept();
+            
+            din = new DataInputStream(s.getInputStream());
+            dout = new DataOutputStream(s.getOutputStream());
+            
+            while(!msgin.equals("exit")){
+                msgin = din.readUTF();
+                msg_area.setText(msg_area.getText().trim() + "\n "+ msgin);
+                
+            }
+             
+        } catch (Exception e) {
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea msg_area;
+    private static javax.swing.JTextArea msg_area;
     private javax.swing.JButton msg_send;
     private javax.swing.JTextField msg_text;
     // End of variables declaration//GEN-END:variables

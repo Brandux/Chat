@@ -5,6 +5,10 @@
  */
 package ChatV2;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+
 /**
  *
  * @author Brandukosky
@@ -14,6 +18,9 @@ public class chat_cliente extends javax.swing.JFrame {
     /**
      * Creates new form chat_cliente
      */
+    static  Socket s;
+    static DataInputStream din ;
+    static DataOutputStream dout;
     public chat_cliente() {
         initComponents();
     }
@@ -29,21 +36,26 @@ public class chat_cliente extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        msg_areaC = new javax.swing.JTextArea();
+        msg_area = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         msg_text = new javax.swing.JTextField();
         msg_send = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        msg_areaC.setColumns(20);
-        msg_areaC.setRows(5);
-        jScrollPane1.setViewportView(msg_areaC);
+        msg_area.setColumns(20);
+        msg_area.setRows(5);
+        jScrollPane1.setViewportView(msg_area);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
         jLabel1.setText("CLIENTE");
 
         msg_send.setText("Enviar");
+        msg_send.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msg_sendActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -92,6 +104,17 @@ public class chat_cliente extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
+
+        try {
+            String msgout ="";
+            msgout = msg_text.getText().trim();
+            dout.writeUTF(msgout);
+        } catch (Exception e) {
+        
+        }
+    }//GEN-LAST:event_msg_sendActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -125,13 +148,28 @@ public class chat_cliente extends javax.swing.JFrame {
                 new chat_cliente().setVisible(true);
             }
         });
+        
+        try {
+            s=  new Socket("127.0.0.1" , 1201);
+            din = new DataInputStream(s.getInputStream());
+            dout = new DataOutputStream(s.getOutputStream());
+            String msgin  ="";
+            
+            while(!msgin.equals("exit")){
+                msgin  = din.readUTF();
+                msg_area.setText(msg_area.getText().trim() + " \n SERVER:  \t"+ msgin);
+            }
+            
+        } catch (Exception e) {
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea msg_areaC;
+    private static javax.swing.JTextArea msg_area;
     private javax.swing.JButton msg_send;
     private javax.swing.JTextField msg_text;
     // End of variables declaration//GEN-END:variables
